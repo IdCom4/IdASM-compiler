@@ -1,0 +1,4 @@
+func _start {
+    print "Hello world !\n"
+    ret 0
+}

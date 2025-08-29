@@ -1,0 +1,210 @@
+
+
+func _start {
+    loop 1 == 1 {
+        call askUser()
+    }
+
+    ret 0
+}
+
+func askUser {
+    print "input a number for which to compute the fibonacci suite: \n"
+
+    move 0xEEE R2 # store addr
+    move 1 R0 # buffer
+    move 0 R1 # counter
+
+    loop R0 > 0 {
+        bgetc R0
+
+        if R0 == '\n' {
+
+            if R1 == 0 {
+                print "Empty input\n"
+                ret
+            }
+
+            sub R2 R1
+            move ACC0 R2
+            call atoi(R1,R2)
+
+            pop R0
+
+            if R0 < 0 {
+                print "Invalid input\n"
+                ret
+            }
+
+            call fibonacci(R0)
+            pop R0
+
+            call printResult(R0)
+
+            ret
+        }
+
+        move R0 *R2
+        incr R2
+        INCR R1
+    }
+
+    ret
+}
+
+func fibonacci {
+    if R0 <= 0 { ret 0 }
+    if R0 <= 2 { ret 1 }
+
+    sub R0 1
+    call fibonacci(ACC0)
+    pop R0
+
+    sub ACC0 1
+    call fibonacci(ACC0)
+    pop R1
+
+    add R0 R1
+    ret ACC0
+}
+
+func printResult {
+
+    move 0 R1
+
+    print "result: "
+
+    loop R0 > 0 {
+        div R0 10
+        move ACC0 R0
+        push ACC1
+        incr R1
+    }
+
+    loop R1 > 0 {
+        pop R0
+        add R0 48
+        print ACC0
+        decr R1
+    }
+
+    print "\n"
+    ret
+}
+
+func atoi {
+    move R0 R2 # nbrDigit
+
+    move SPTR R0
+
+    # to push (R0 + x), set SPTR to R0 + (x - 1)
+    # to pop  (R0 + x), set SPTR to R0 + x
+
+    push 0 # counter (R0 + 1)
+    push 0 # power (R0 + 2)
+    push 0 # result (R0 + 3)
+    push R1 # address (R0 + 4)
+    push R2 # nbr digit (R0 + 5)
+
+    move 0 R1
+
+    loop R1 < R2 {
+
+        # get char address
+        # set sptr
+        add R0 4
+        move ACC0 SPTR
+        pop R2 # address (R0 + 4)
+
+        # get char
+        add R2 R1
+        move *ACC0 R2
+
+        # check if it's a digit
+        sub R2 48
+        move ACC0 R2
+        if ACC0 < 0 {
+            move R0 SPTR
+            ret -1
+        }
+        if ACC0 > 9 {
+            move R0 SPTR
+            ret -1
+        }
+
+        # store it
+        # set sptr
+        add R0 5
+        move ACC0 SPTR
+        push R2 # digit (R0 + 6)
+
+        # compute power
+        # set sptr
+        ADD R0 2
+        move ACC0 SPTR
+        pop R2 # power (R0 + 2)
+
+        mul R2 10
+        move ACC0 R2
+        push R2
+
+        # apply power
+        # set sptr
+        add R0 3
+        move ACC0 SPTR
+        pop R1 # result (R0 + 3)
+
+        mul R1 R2
+        move ACC0 R2
+
+        # get digit
+        # set sptr
+        add R0 6
+        move ACC0 SPTR
+        pop R1 # digit (R0 + 6)
+
+        add R1 R2
+        move ACC0 R2
+
+        # store result
+        # set sptr
+        add R0 2
+        move ACC0 SPTR
+        push R2 # result (R0 + 3)
+
+        # increase power if == 0
+        # set sptr
+        add R0 2
+        move ACC0 SPTR
+        pop R2 # power (R0 + 2)
+
+        if R2 <= 0 { move 1 R2 }
+        push R2
+
+        # get nbrDigit
+        # set sptr
+        add R0 5
+        move ACC0 SPTR
+        pop R2 # power (R0 + 5)
+
+        # increase counter
+        # set sptr
+        add R0 1
+        move ACC0 SPTR
+        pop R1 # counter (R0 + 1)
+
+        incr R1
+        push R1
+    }
+
+    # get result
+    # set sptr
+    add R0 3
+    move ACC0 SPTR
+    pop R2 # result (R0 + 3)
+
+    move R0 SPTR
+
+    ret R2
+}
+
