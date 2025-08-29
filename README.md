@@ -6,15 +6,16 @@ It provides a low-level programming model with a clear syntax, simple instructio
 ---
 
 ## 📌 Table of Contents
-1. [Introduction](#introduction)
-2. [Syntax](#syntax)
+1. [Introduction](#-introduction)
+2. [Syntax](#-syntax)
     - [General Structure](#general-structure)
-    - [Keywords and Instructions](#keywords-and-instructions)
+    - [Values](#values)
+    - [Instructions](#instructions)
+    - [Controls](#controls)
     - [Comments](#comments)
     - [CPU static addresses](#cpu-static-addresses)
-    - [Literals (numbers, strings, etc.)](#literals-numbers-strings-etc)
-3. [Compiler Options](#compiler-options)
-4. [Target Platform](#target-platform)
+3. [Compiler Options](#-compiler-options)
+4. [Target Platform](#-target-platform)
 5. [Usage: Hello world !](#usage-hello-world)
 
 resources:
